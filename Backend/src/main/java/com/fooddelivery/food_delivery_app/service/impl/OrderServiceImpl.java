@@ -79,6 +79,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<OrderDTO> getAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream()
+                .map(orderMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
     public List<OrderDTO> getUserOrders(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Utilizatorul nu există"));

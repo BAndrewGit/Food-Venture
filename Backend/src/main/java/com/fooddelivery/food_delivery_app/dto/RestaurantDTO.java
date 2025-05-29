@@ -16,5 +16,6 @@ public class RestaurantDTO {
     private Integer deliveryRange;
     private Double minOrderValue;
     private List<RestaurantScheduleDTO> schedules;
-    private byte[] imageData;
+    private String imageBase64;
+
 }

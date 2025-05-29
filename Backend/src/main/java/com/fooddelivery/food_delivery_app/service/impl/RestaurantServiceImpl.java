@@ -7,7 +7,6 @@ import com.fooddelivery.food_delivery_app.repository.RestaurantRepository;
 import com.fooddelivery.food_delivery_app.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +20,6 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public RestaurantDTO create(RestaurantDTO dto) {
         Restaurant restaurant = restaurantMapper.toEntity(dto);
-        // pentru fiecare schedule, setezi restaurantul (dacă nu ai orphanRemoval, e vital)
         if (restaurant.getSchedules() != null) {
             restaurant.getSchedules().forEach(s -> s.setRestaurant(restaurant));
         }
@@ -54,7 +52,6 @@ public class RestaurantServiceImpl implements RestaurantService {
                 .orElseThrow(() -> new RuntimeException("Restaurant not found"));
         Restaurant updated = restaurantMapper.toEntity(dto);
         updated.setId(existing.getId());
-        // idem, sincronizezi relația
         if (updated.getSchedules() != null) {
             updated.getSchedules().forEach(s -> s.setRestaurant(updated));
         }

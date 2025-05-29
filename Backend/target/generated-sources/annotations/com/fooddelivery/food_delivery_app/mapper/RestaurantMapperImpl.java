@@ -5,7 +5,6 @@ import com.fooddelivery.food_delivery_app.dto.RestaurantScheduleDTO;
 import com.fooddelivery.food_delivery_app.entity.Restaurant;
 import com.fooddelivery.food_delivery_app.entity.RestaurantSchedule;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-26T15:46:47+0300",
+    date = "2025-05-29T21:58:32+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.15 (Microsoft)"
 )
 @Component
@@ -41,10 +40,6 @@ public class RestaurantMapperImpl implements RestaurantMapper {
         restaurantDTO.setDeliveryRange( entity.getDeliveryRange() );
         restaurantDTO.setMinOrderValue( entity.getMinOrderValue() );
         restaurantDTO.setSchedules( restaurantScheduleListToRestaurantScheduleDTOList( entity.getSchedules() ) );
-        byte[] imageData = entity.getImageData();
-        if ( imageData != null ) {
-            restaurantDTO.setImageData( Arrays.copyOf( imageData, imageData.length ) );
-        }
 
         return restaurantDTO;
     }
@@ -68,10 +63,6 @@ public class RestaurantMapperImpl implements RestaurantMapper {
         restaurant.setDeliveryRange( dto.getDeliveryRange() );
         restaurant.setMinOrderValue( dto.getMinOrderValue() );
         restaurant.setSchedules( restaurantScheduleDTOListToRestaurantScheduleList( dto.getSchedules() ) );
-        byte[] imageData = dto.getImageData();
-        if ( imageData != null ) {
-            restaurant.setImageData( Arrays.copyOf( imageData, imageData.length ) );
-        }
 
         return restaurant;
     }

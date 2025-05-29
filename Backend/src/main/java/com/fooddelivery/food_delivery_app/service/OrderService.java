@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface OrderService {
     OrderDTO placeOrder(OrderDTO dto, String username);
+    List<OrderDTO> getAllOrders();
     List<OrderDTO> getUserOrders(String username);
     void cancelOrder(Long orderId, String username);
 }
