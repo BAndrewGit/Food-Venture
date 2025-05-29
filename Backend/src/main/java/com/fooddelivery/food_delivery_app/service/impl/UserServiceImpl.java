@@ -1,6 +1,7 @@
 package com.fooddelivery.food_delivery_app.service.impl;
 
 import com.fooddelivery.food_delivery_app.dto.UserDTO;
+import com.fooddelivery.food_delivery_app.dto.UserUpdateDTO;
 import com.fooddelivery.food_delivery_app.entity.User;
 import com.fooddelivery.food_delivery_app.mapper.UserMapper;
 import com.fooddelivery.food_delivery_app.repository.UserRepository;
@@ -23,7 +24,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO updateUser(String username, UserDTO updatedData) {
+    public UserDTO updateUser(String username, UserUpdateDTO updatedData) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Utilizatorul nu a fost găsit"));
 

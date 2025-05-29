@@ -1,19 +1,16 @@
-import React from 'react';
-import { Container, CssBaseline } from '@mui/material';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import { Outlet } from 'react-router-dom';
+import { Box } from '@mui/material';
+import Navbar from './Navbar';
+import Footer from './Footer';
 
-const MainLayout = ({ children }: { children: React.ReactNode }) => {
+export default function Layout() {
     return (
-        <>
-            <CssBaseline />
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Navbar />
-            <Container maxWidth="lg" style={{ marginTop: '2rem', minHeight: '80vh' }}>
-                {children}
-            </Container>
+            <Box component="main" sx={{ flexGrow: 1, px: 2, py: 4 }}>
+                <Outlet />
+            </Box>
             <Footer />
-        </>
+        </Box>
     );
-};
-
-export default MainLayout;
+}

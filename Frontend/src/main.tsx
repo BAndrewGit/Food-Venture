@@ -1,14 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { RestaurantProvider } from './context/RestaurantContext';
-
 import './index.css';
 
 // Optional: Create a custom theme
@@ -31,15 +28,13 @@ root.render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <BrowserRouter>
-                <AuthProvider>
-                    <CartProvider>
-                        <RestaurantProvider>
-                            <App />
-                        </RestaurantProvider>
-                    </CartProvider>
-                </AuthProvider>
-            </BrowserRouter>
+            <AuthProvider>
+                <CartProvider>
+                    <RestaurantProvider>
+                        <App />
+                    </RestaurantProvider>
+                </CartProvider>
+            </AuthProvider>
         </ThemeProvider>
     </React.StrictMode>
 );

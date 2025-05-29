@@ -1,6 +1,7 @@
 package com.fooddelivery.food_delivery_app.controller;
 
 import com.fooddelivery.food_delivery_app.dto.UserDTO;
+import com.fooddelivery.food_delivery_app.dto.UserUpdateDTO;
 import com.fooddelivery.food_delivery_app.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<UserDTO> updateUser(@AuthenticationPrincipal UserDetails userDetails,
-                                              @Valid @RequestBody UserDTO userDTO) {
+                                              @Valid @RequestBody UserUpdateDTO userDTO) {
         return ResponseEntity.ok(userService.updateUser(userDetails.getUsername(), userDTO));
     }
 

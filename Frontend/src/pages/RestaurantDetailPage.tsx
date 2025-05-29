@@ -1,64 +1,170 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import {
+    Container, Typography, Select, MenuItem, Box, Paper,
+    Button, TextField, IconButton, Input
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import axios from '../services/axios';
 
-type Product = {
-    id: number;
-    name: string;
-    price: number;
-    description: string;
-    available: boolean;
-};
+type Restaurant = { id: number; name: string };
+type Product = { id: number; name: string; price: number; description: string; imageBase64?: string };
 
-type Restaurant = {
-    id: number;
-    name: string;
-    address: string;
-    description: string;
-    cuisineType: string;
-};
-
-export default function RestaurantDetailPage() {
+export default function ProductManagementPage() {
     const { id } = useParams();
-    const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+    const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+    const [selectedId, setSelectedId] = useState<number | null>(id ? Number(id) : null);
     const [products, setProducts] = useState<Product[]>([]);
+    const [newProduct, setNewProduct] = useState({ name: '', price: '', description: '', imageFile: null as File | null });
+    const [editingId, setEditingId] = useState<number | null>(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/restaurants/${id}`)
-            .then(res => setRestaurant(res.data))
-            .catch(() => alert('Eroare la încărcarea restaurantului'));
+        axios.get('/restaurants')
+            .then(res => setRestaurants(res.data))
+            .catch(err => console.error('Eroare la restaurante:', err));
+    }, []);
 
-        axios.get(`http://localhost:8080/api/products/restaurant/${id}`)
-            .then(res => setProducts(res.data))
-            .catch(() => alert('Eroare la încărcarea produselor'));
-    }, [id]);
+    useEffect(() => {
+        if (selectedId) {
+            axios.get(`/products/restaurant/${selectedId}`)
+                .then(res => setProducts(res.data))
+                .catch(err => console.error('Eroare la produse:', err));
+        } else {
+            setProducts([]);
+        }
+    }, [selectedId]);
+
+    const handleAddOrUpdateProduct = async () => {
+        if (!selectedId) return alert('Selectează un restaurant');
+
+        try {
+            const formData = new FormData();
+            formData.append('name', newProduct.name);
+            formData.append('price', newProduct.price);
+            formData.append('description', newProduct.description);
+            if (newProduct.imageFile) formData.append('image', newProduct.imageFile);
+            formData.append('restaurantId', selectedId.toString());
+            formData.append('available', 'true');
+
+            if (editingId) {
+                await axios.put(`/products/${editingId}`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+                setEditingId(null);
+            } else {
+                const response = await axios.post(`/products`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+                setProducts([...products, response.data]);
+            }
+
+            setNewProduct({ name: '', price: '', description: '', imageFile: null });
+            axios.get(`/products/restaurant/${selectedId}`).then(res => setProducts(res.data));
+        } catch {
+            alert('Eroare la salvarea produsului');
+        }
+    };
+
+    const handleEdit = (product: Product) => {
+        setNewProduct({
+            name: product.name,
+            price: product.price.toString(),
+            description: product.description,
+            imageFile: null
+        });
+        setEditingId(product.id);
+    };
+
+    const handleDelete = async (productId: number) => {
+        if (!confirm('Sigur vrei să ștergi acest produs?')) return;
+        try {
+            await axios.delete(`/products/${productId}`);
+            setProducts(products.filter(p => p.id !== productId));
+        } catch {
+            alert('Eroare la ștergerea produsului');
+        }
+    };
 
     return (
-        <div>
-            {restaurant ? (
-                <>
-                    <h2>{restaurant.name}</h2>
-                    <p>{restaurant.description}</p>
-                    <p>{restaurant.address} — {restaurant.cuisineType}</p>
+        <Container>
+            <Typography variant="h4" gutterBottom>Gestionare Produse</Typography>
 
-                    <h3>Meniu</h3>
-                    {products.length === 0 ? (
-                        <p>Nu există produse disponibile.</p>
-                    ) : (
-                        <ul>
-                            {products.map(p => (
-                                <li key={p.id}>
-                                    {p.name} — {p.price} RON
-                                    <br />
-                                    <small>{p.description}</small>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </>
-            ) : (
-                <p>Se încarcă datele restaurantului...</p>
+            <Box mt={2} mb={4}>
+                <Typography variant="subtitle1">Selectează restaurantul:</Typography>
+                <Select
+                    fullWidth
+                    value={selectedId || ''}
+                    onChange={(e) => setSelectedId(Number(e.target.value))}
+                >
+                    {restaurants.map(r => (
+                        <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
+                    ))}
+                </Select>
+            </Box>
+
+            {selectedId && (
+                <Paper sx={{ p: 3, mb: 4 }}>
+                    <Typography variant="h6" gutterBottom>{editingId ? 'Editează produs' : 'Adaugă produs'}</Typography>
+                    <Box display="flex" flexDirection="column" gap={2}>
+                        <TextField
+                            label="Nume"
+                            value={newProduct.name}
+                            onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                        />
+                        <TextField
+                            label="Preț"
+                            type="number"
+                            value={newProduct.price}
+                            onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                        />
+                        <TextField
+                            label="Descriere"
+                            multiline
+                            rows={3}
+                            value={newProduct.description}
+                            onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                        />
+                        <Input
+                            type="file"
+                            onChange={(e) => setNewProduct({
+                                ...newProduct,
+                                imageFile: (e.target as HTMLInputElement).files?.[0] || null
+                            })}
+                        />
+                        <Button variant="contained" onClick={handleAddOrUpdateProduct}>
+                            {editingId ? 'Salvează modificările' : 'Adaugă'}
+                        </Button>
+                    </Box>
+                </Paper>
             )}
-        </div>
+
+            <Typography variant="h6" gutterBottom>Produse existente</Typography>
+            {products.length === 0 ? (
+                <Typography>Nu există produse pentru acest restaurant.</Typography>
+            ) : (
+                <Box>
+                    {products.map(p => (
+                        <Box key={p.id} mb={2} display="flex" justifyContent="space-between" alignItems="center">
+                            <Box>
+                                <Typography fontWeight="bold">{p.name} – {p.price} lei</Typography>
+                                <Typography variant="body2" color="text.secondary">{p.description}</Typography>
+                                {p.imageBase64 && (
+                                    <img
+                                        src={`data:image/jpeg;base64,${p.imageBase64}`}
+                                        alt={p.name}
+                                        style={{ maxWidth: '150px', marginTop: '10px' }}
+                                    />
+                                )}
+                            </Box>
+                            <Box>
+                                <IconButton onClick={() => handleEdit(p)}><EditIcon /></IconButton>
+                                <IconButton onClick={() => handleDelete(p.id)}><DeleteIcon /></IconButton>
+                            </Box>
+                        </Box>
+                    ))}
+                </Box>
+            )}
+        </Container>
     );
 }

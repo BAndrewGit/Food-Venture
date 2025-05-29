@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
 export type CartItem = {
     productId: number;
@@ -16,10 +16,21 @@ type CartContextType = {
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
-export { CartContext }; // Export explicit adăugat
+export { CartContext };
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+    // Încarcă din localStorage la montare
+    useEffect(() => {
+        const stored = localStorage.getItem('cart');
+        if (stored) setCartItems(JSON.parse(stored));
+    }, []);
+
+    // Salvează în localStorage la fiecare modificare
+    useEffect(() => {
+        localStorage.setItem('cart', JSON.stringify(cartItems));
+    }, [cartItems]);
 
     const addToCart = (item: CartItem) => {
         setCartItems(prev => {

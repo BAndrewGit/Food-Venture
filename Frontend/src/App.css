@@ -1,41 +1,3 @@
-/* Global container styles */
-#root {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Logo styles - kept from original */
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-/* Restaurant and food related styles */
 .restaurant-card {
   transition: transform 0.3s ease;
   height: 100%;
@@ -49,10 +11,9 @@
 .food-image {
   object-fit: cover;
   width: 100%;
-  aspect-ratio: 16/9;
+  aspect-ratio: 16 / 9;
 }
 
-/* Custom button styles */
 .order-button {
   background-image: linear-gradient(45deg, #646cff, #535bf2);
   transition: all 0.3s ease;
@@ -63,9 +24,6 @@
   transform: scale(1.02);
 }
 
-/* Mobile responsiveness */
-@media (max-width: 600px) {
-  .mobile-scroll {
-    overflow-x: auto;
-  }
+.mobile-scroll {
+  overflow-x: auto;
 }

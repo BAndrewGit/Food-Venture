@@ -7,7 +7,6 @@ import {
     Card,
     CardContent,
     CardActionArea,
-    Grid,
     CircularProgress,
     Box
 } from '@mui/material';
@@ -57,9 +56,22 @@ const HomePage = () => {
             {restaurants.length === 0 ? (
                 <Typography variant="body1">Nu există restaurante disponibile momentan.</Typography>
             ) : (
-                <Grid container spacing={3}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 3,
+                        justifyContent: 'flex-start'
+                    }}
+                >
                     {restaurants.map(restaurant => (
-                        <Grid item xs={12} sm={6} md={4} key={restaurant.id}>
+                        <Box
+                            key={restaurant.id}
+                            sx={{
+                                flex: '1 1 300px',
+                                maxWidth: '100%',
+                            }}
+                        >
                             <Card>
                                 <CardActionArea onClick={() => navigate(`/restaurants/${restaurant.id}`)}>
                                     <CardContent>
@@ -70,9 +82,9 @@ const HomePage = () => {
                                     </CardContent>
                                 </CardActionArea>
                             </Card>
-                        </Grid>
+                        </Box>
                     ))}
-                </Grid>
+                </Box>
             )}
         </Container>
     );

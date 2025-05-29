@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import axios from '../services/axios';
 import { useNavigate } from 'react-router-dom';
+import { Container, TextField, Button, Typography } from '@mui/material';
+import axios from '../services/axios';
 
 export default function RegisterPage() {
     const [username, setUsername] = useState('');
@@ -23,30 +24,36 @@ export default function RegisterPage() {
     };
 
     return (
-        <div style={{ maxWidth: 400, margin: 'auto' }}>
-            <h2>Înregistrare</h2>
-            <input
-                type="text"
-                placeholder="Username"
+        <Container maxWidth="xs">
+            <Typography variant="h5" gutterBottom>Înregistrare</Typography>
+
+            <TextField
+                label="Username"
+                fullWidth
+                margin="normal"
                 value={username}
-                onChange={e => setUsername(e.target.value)}
-                style={{ width: '100%', marginBottom: '10px' }}
+                onChange={(e) => setUsername(e.target.value)}
             />
-            <input
+            <TextField
+                label="Email"
                 type="email"
-                placeholder="Email"
+                fullWidth
+                margin="normal"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
-                style={{ width: '100%', marginBottom: '10px' }}
+                onChange={(e) => setEmail(e.target.value)}
             />
-            <input
+            <TextField
+                label="Parolă"
                 type="password"
-                placeholder="Parolă"
+                fullWidth
+                margin="normal"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
-                style={{ width: '100%', marginBottom: '10px' }}
+                onChange={(e) => setPassword(e.target.value)}
             />
-            <button onClick={handleRegister}>Creează cont</button>
-        </div>
+
+            <Button variant="contained" fullWidth sx={{ mt: 2 }} onClick={handleRegister}>
+                Creează cont
+            </Button>
+        </Container>
     );
 }
